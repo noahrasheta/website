@@ -108,7 +108,7 @@ Remember: Your goal is to make the transcript as readable as if Noah had written
                         content: `Please clean and organize the following podcast transcript:\n\n${transcriptContent}`
                     }
                 ],
-                max_tokens: 16000
+                max_tokens: 8000
             })
         });
 
