@@ -15,7 +15,7 @@ const downloadBtn = document.getElementById('downloadBtn');
 
 // Load saved API key from localStorage
 window.addEventListener('DOMContentLoaded', () => {
-    const savedApiKey = localStorage.getItem('openrouterApiKey');
+    const savedApiKey = localStorage.getItem('claudeApiKey');
     if (savedApiKey) {
         apiKeyInput.value = savedApiKey;
         checkFormValidity();
@@ -26,7 +26,7 @@ window.addEventListener('DOMContentLoaded', () => {
 apiKeyInput.addEventListener('input', () => {
     const apiKey = apiKeyInput.value.trim();
     if (apiKey) {
-        localStorage.setItem('openrouterApiKey', apiKey);
+        localStorage.setItem('claudeApiKey', apiKey);
     }
     checkFormValidity();
 });
@@ -88,7 +88,7 @@ processBtn.addEventListener('click', async () => {
             throw new Error('File is empty or could not be read.');
         }
 
-        showStatus('Sending transcript to Claude AI via OpenRouter for processing...', 'info');
+        showStatus('Sending transcript to Claude AI for processing...', 'info');
 
         // Call Claude API
         const response = await callClaudeAPI(apiKey, fileContent);

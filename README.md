@@ -5,7 +5,7 @@ A web application that uses Claude AI (Haiku 4.5) to clean and organize podcast 
 ## Features
 
 - Upload raw podcast transcript files (txt, md, docx)
-- Automatic cleaning and formatting using Claude AI via OpenRouter
+- Automatic cleaning and formatting using Claude AI
 - Removes filler words and verbal tics
 - Fixes grammar and punctuation
 - Identifies and labels speakers
@@ -54,10 +54,10 @@ A web application that uses Claude AI (Haiku 4.5) to clean and organize podcast 
 
 ## Usage
 
-1. Enter your OpenRouter API key (get one from https://openrouter.ai/keys)
+1. Enter your Claude API key (get one from https://console.anthropic.com/)
 2. Upload a podcast transcript file
 3. Click "Process Transcript"
-4. Wait for Claude to clean and format the content via OpenRouter
+4. Wait for Claude to clean and format the content
 5. Download the cleaned markdown file
 
 ## Development
@@ -71,19 +71,19 @@ npm run dev
 
 - **Frontend:** Vanilla JavaScript, HTML5, CSS3
 - **Backend:** Netlify Serverless Functions
-- **AI Model:** Claude 3.5 Haiku (anthropic/claude-3.5-haiku)
-- **API:** OpenRouter API (accessing Claude models)
+- **AI Model:** Claude 3.5 Haiku (claude-3-5-haiku-20241022)
+- **API:** Anthropic Claude API
 
 ## Architecture
 
-The app uses a Netlify serverless function to handle OpenRouter API requests (to avoid CORS issues):
+The app uses a Netlify serverless function to handle Claude API requests (to avoid CORS issues):
 
 ```
-Browser (app.js) → Netlify Function (claude.js) → OpenRouter API → Claude Model
+Browser (app.js) → Netlify Function (claude.js) → Anthropic Claude API
 ```
 
-Your API key is sent from the browser to the Netlify function, which then makes the request to OpenRouter on your behalf.
+Your API key is sent from the browser to the Netlify function, which then makes the request to Claude on your behalf.
 
 ## Security Note
 
-Your API key is stored in browser localStorage for convenience. The key is only sent to the Netlify function and then to OpenRouter API. Never share your API key or commit it to version control.
+Your API key is stored in browser localStorage for convenience. The key is only sent to the Netlify function and then to Anthropic API. Never share your API key or commit it to version control.
