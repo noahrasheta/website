@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Podcast Transcript Editor</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        :root {
+            --bg: #ffffff;
+            --contrast: #000000;
+            --accent: #4a90e2;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: var(--bg);
+            color: var(--contrast);
+            padding: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--contrast);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--contrast);
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="file"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        button {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover:not(:disabled) {
+            background: #357abd;
+        }
+
+        button:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .file-info {
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+            color: #666;
+        }
+
+        .status {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .status.info {
+            background: #e3f2fd;
+            color: #1976d2;
+            display: block;
+        }
+
+        .status.success {
+            background: #e8f5e9;
+            color: #388e3c;
+            display: block;
+        }
+
+        .status.error {
+            background: #ffebee;
+            color: #d32f2f;
+            display: block;
+        }
+
+        .download-section {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e0e0e0;
+            display: none;
+        }
+
+        .download-section.show {
+            display: block;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Podcast Transcript Editor</h1>
+        <p>Upload your podcast transcript and clean it up using Claude AI.</p>
+
+        <div class="form-group">
+            <label for="apiKey">Claude API Key</label>
+            <input type="password" id="apiKey" placeholder="sk-ant-..." />
+            <div class="file-info">Your API key is stored locally in your browser and never sent anywhere except to Claude.</div>
+        </div>
+
+        <div class="form-group">
+            <label for="transcriptFile">Upload Transcript File</label>
+            <input type="file" id="transcriptFile" accept=".txt,.md,.doc,.docx" />
+            <div class="file-info" id="fileInfo"></div>
+        </div>
+
+        <button id="processBtn" disabled>
+            <span id="btnText">Process Transcript</span>
+            <span id="btnSpinner" class="spinner hidden"></span>
+        </button>
+
+        <div id="status" class="status"></div>
+
+        <div id="downloadSection" class="download-section">
+            <h2>Download Cleaned Transcript</h2>
+            <button id="downloadBtn">Download Markdown File</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
