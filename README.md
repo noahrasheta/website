@@ -4,8 +4,8 @@ A web application that uses Claude AI (Haiku 4.5) to clean and organize podcast 
 
 ## Features
 
-- Upload raw podcast transcript files (txt, md, doc, docx)
-- Automatic cleaning and formatting using Claude AI
+- Upload raw podcast transcript files (txt, md, docx)
+- Automatic cleaning and formatting using Claude AI via OpenRouter
 - Removes filler words and verbal tics
 - Fixes grammar and punctuation
 - Identifies and labels speakers
@@ -54,10 +54,10 @@ A web application that uses Claude AI (Haiku 4.5) to clean and organize podcast 
 
 ## Usage
 
-1. Enter your Claude API key (get one from https://console.anthropic.com/)
+1. Enter your OpenRouter API key (get one from https://openrouter.ai/keys)
 2. Upload a podcast transcript file
 3. Click "Process Transcript"
-4. Wait for Claude to clean and format the content
+4. Wait for Claude to clean and format the content via OpenRouter
 5. Download the cleaned markdown file
 
 ## Development
@@ -70,20 +70,20 @@ npm run dev
 ## Technical Details
 
 - **Frontend:** Vanilla JavaScript, HTML5, CSS3
-- **Backend:** Node.js with Express
-- **AI Model:** Claude 3.5 Haiku (claude-3-5-haiku-20241022)
-- **API:** Anthropic Claude API
+- **Backend:** Netlify Serverless Functions
+- **AI Model:** Claude 3.5 Haiku (anthropic/claude-3.5-haiku)
+- **API:** OpenRouter API (accessing Claude models)
 
 ## Architecture
 
-The app uses a proxy server to handle Claude API requests (to avoid CORS issues):
+The app uses a Netlify serverless function to handle OpenRouter API requests (to avoid CORS issues):
 
 ```
-Browser (app.js) → Express Server (server.js) → Claude API
+Browser (app.js) → Netlify Function (claude.js) → OpenRouter API → Claude Model
 ```
 
-Your API key is sent from the browser to the server, which then makes the request to Claude on your behalf.
+Your API key is sent from the browser to the Netlify function, which then makes the request to OpenRouter on your behalf.
 
 ## Security Note
 
-Your API key is stored in browser localStorage for convenience. The key is only sent to your local server and then to Claude API. Never share your API key or commit it to version control.
+Your API key is stored in browser localStorage for convenience. The key is only sent to the Netlify function and then to OpenRouter API. Never share your API key or commit it to version control.
