@@ -87,28 +87,24 @@ Deliver a clean, polished transcript that:
 
 Remember: Your goal is to make the transcript as readable as if Noah had written it himself, while honoring the spontaneous, conversational nature of spoken teaching.`;
 
-        // Call OpenRouter API
-        const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        // Call Anthropic API directly
+        const response = await fetch('https://api.anthropic.com/v1/messages', {
             method: 'POST',
             headers: {
-                'Authorization': `Bearer ${apiKey}`,
                 'Content-Type': 'application/json',
-                'HTTP-Referer': 'https://secularbuddhism.com',
-                'X-Title': 'Secular Buddhism Podcast Transcript Editor'
+                'x-api-key': apiKey,
+                'anthropic-version': '2023-06-01'
             },
             body: JSON.stringify({
-                model: 'anthropic/claude-haiku-4.5',
+                model: 'claude-3-5-haiku-20241022',
+                max_tokens: 8000,
+                system: SYSTEM_PROMPT,
                 messages: [
-                    {
-                        role: 'system',
-                        content: SYSTEM_PROMPT
-                    },
                     {
                         role: 'user',
                         content: `Please clean and organize the following podcast transcript:\n\n${transcriptContent}`
                     }
-                ],
-                max_tokens: 8000
+                ]
             })
         });
 
@@ -123,7 +119,7 @@ Remember: Your goal is to make the transcript as readable as if Noah had written
 
         const data = await response.json();
 
-        if (!data.choices || !data.choices[0] || !data.choices[0].message || !data.choices[0].message.content) {
+        if (!data.content || !data.content[0] || !data.content[0].text) {
             return {
                 statusCode: 500,
                 body: JSON.stringify({ error: 'Unexpected API response format' })
@@ -135,7 +131,7 @@ Remember: Your goal is to make the transcript as readable as if Noah had written
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ cleanedTranscript: data.choices[0].message.content })
+            body: JSON.stringify({ cleanedTranscript: data.content[0].text })
         };
 
     } catch (error) {
