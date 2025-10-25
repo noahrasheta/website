@@ -1,24 +1,3 @@
-// Hard-coded system prompt for cleaning podcast transcripts
-const SYSTEM_PROMPT = `You are an expert podcast transcript editor. Your task is to clean and organize raw podcast transcripts into well-formatted, readable markdown documents.
-
-When cleaning transcripts, you should:
-
-1. **Remove filler words and verbal tics**: Remove excessive "um", "uh", "like", "you know", etc., while maintaining natural speech flow
-2. **Fix grammar and punctuation**: Correct obvious grammatical errors and add proper punctuation
-3. **Identify speakers**: Clearly label different speakers (e.g., "**Host:**", "**Guest:**")
-4. **Structure the content**: Break the transcript into logical sections with descriptive headings
-5. **Format for readability**: Use markdown formatting including:
-   - Headings (##, ###) for sections
-   - Bold for speaker names
-   - Paragraph breaks for readability
-   - Block quotes (>) for important quotes or key points
-   - Lists where appropriate
-6. **Preserve meaning**: Never change the meaning or intent of what was said
-7. **Keep important context**: Maintain jokes, anecdotes, and conversational elements that add value
-8. **Add timestamps**: If timestamps are present in the original, preserve them in format [HH:MM:SS]
-
-Output the cleaned transcript in markdown format with a clear title at the top.`;
-
 // Global variables
 let cleanedTranscript = '';
 let originalFileName = '';
@@ -36,7 +15,7 @@ const downloadBtn = document.getElementById('downloadBtn');
 
 // Load saved API key from localStorage
 window.addEventListener('DOMContentLoaded', () => {
-    const savedApiKey = localStorage.getItem('claudeApiKey');
+    const savedApiKey = localStorage.getItem('openrouterApiKey');
     if (savedApiKey) {
         apiKeyInput.value = savedApiKey;
         checkFormValidity();
@@ -47,7 +26,7 @@ window.addEventListener('DOMContentLoaded', () => {
 apiKeyInput.addEventListener('input', () => {
     const apiKey = apiKeyInput.value.trim();
     if (apiKey) {
-        localStorage.setItem('claudeApiKey', apiKey);
+        localStorage.setItem('openrouterApiKey', apiKey);
     }
     checkFormValidity();
 });
@@ -109,7 +88,7 @@ processBtn.addEventListener('click', async () => {
             throw new Error('File is empty or could not be read.');
         }
 
-        showStatus('Sending transcript to Claude AI for processing...', 'info');
+        showStatus('Sending transcript to Claude AI via OpenRouter for processing...', 'info');
 
         // Call Claude API
         const response = await callClaudeAPI(apiKey, fileContent);
@@ -132,7 +111,26 @@ processBtn.addEventListener('click', async () => {
 });
 
 // Read file content
-function readFileContent(file) {
+async function readFileContent(file) {
+    const fileName = file.name.toLowerCase();
+
+    // Handle .docx files using mammoth.js
+    if (fileName.endsWith('.docx')) {
+        try {
+            const arrayBuffer = await file.arrayBuffer();
+            const result = await mammoth.extractRawText({ arrayBuffer: arrayBuffer });
+
+            if (!result.value || result.value.trim().length === 0) {
+                throw new Error('Could not extract text from DOCX file');
+            }
+
+            return result.value;
+        } catch (error) {
+            throw new Error(`Failed to read DOCX file: ${error.message}`);
+        }
+    }
+
+    // Handle plain text files (.txt, .md, etc.)
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
 
@@ -148,41 +146,32 @@ function readFileContent(file) {
     });
 }
 
-// Call Claude API
+// Call Claude API via proxy server
 async function callClaudeAPI(apiKey, transcriptContent) {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
+    const response = await fetch('/api/claude', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
-            'x-api-key': apiKey,
-            'anthropic-version': '2023-06-01'
+            'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            model: 'claude-3-5-haiku-20241022',
-            max_tokens: 4096,
-            system: SYSTEM_PROMPT,
-            messages: [
-                {
-                    role: 'user',
-                    content: `Please clean and organize the following podcast transcript:\n\n${transcriptContent}`
-                }
-            ]
+            apiKey: apiKey,
+            transcriptContent: transcriptContent
         })
     });
 
     if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        const errorMessage = errorData.error?.message || `API request failed with status ${response.status}`;
+        const errorMessage = errorData.error || `Request failed with status ${response.status}`;
         throw new Error(errorMessage);
     }
 
     const data = await response.json();
 
-    if (!data.content || !data.content[0] || !data.content[0].text) {
-        throw new Error('Unexpected API response format');
+    if (!data.cleanedTranscript) {
+        throw new Error('Unexpected response format');
     }
 
-    return data.content[0].text;
+    return data.cleanedTranscript;
 }
 
 // Download cleaned transcript

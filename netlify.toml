@@ -1,0 +1,27 @@
+# Netlify configuration file
+
+[build]
+  # Publish directory (where your static files are)
+  publish = "."
+
+  # Build command (not needed for this static site)
+  command = "echo 'No build needed'"
+
+[functions]
+  # Directory where Netlify functions are located
+  directory = "netlify/functions"
+
+# Redirect for SPA-like behavior
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+  force = true
+
+# Set headers for better security
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
