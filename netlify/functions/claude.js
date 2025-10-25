@@ -107,8 +107,7 @@ Remember: Your goal is to make the transcript as readable as if Noah had written
                         role: 'user',
                         content: `Please clean and organize the following podcast transcript:\n\n${transcriptContent}`
                     }
-                ],
-                max_tokens: 4096
+                ]
             })
         });
 
