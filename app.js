@@ -111,7 +111,26 @@ processBtn.addEventListener('click', async () => {
 });
 
 // Read file content
-function readFileContent(file) {
+async function readFileContent(file) {
+    const fileName = file.name.toLowerCase();
+
+    // Handle .docx files using mammoth.js
+    if (fileName.endsWith('.docx')) {
+        try {
+            const arrayBuffer = await file.arrayBuffer();
+            const result = await mammoth.extractRawText({ arrayBuffer: arrayBuffer });
+
+            if (!result.value || result.value.trim().length === 0) {
+                throw new Error('Could not extract text from DOCX file');
+            }
+
+            return result.value;
+        } catch (error) {
+            throw new Error(`Failed to read DOCX file: ${error.message}`);
+        }
+    }
+
+    // Handle plain text files (.txt, .md, etc.)
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
 
