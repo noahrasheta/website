@@ -15,6 +15,30 @@ A web application that uses Claude AI (Haiku 4.5) to clean and organize podcast 
 
 ## Setup
 
+### Option 1: Deploy to Netlify (Recommended for Public Access)
+
+1. **Install Netlify CLI:**
+   ```bash
+   npm install -g netlify-cli
+   ```
+
+2. **Login to Netlify:**
+   ```bash
+   netlify login
+   ```
+
+3. **Deploy the site:**
+   ```bash
+   netlify deploy --prod
+   ```
+
+4. Follow the prompts:
+   - Create a new site or link to existing
+   - Set publish directory to `.` (current directory)
+   - The site will be deployed to a Netlify URL
+
+### Option 2: Run Locally
+
 1. **Install dependencies:**
    ```bash
    npm install
