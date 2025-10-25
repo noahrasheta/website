@@ -97,7 +97,7 @@ Remember: Your goal is to make the transcript as readable as if Noah had written
                 'X-Title': 'Secular Buddhism Podcast Transcript Editor'
             },
             body: JSON.stringify({
-                model: 'anthropic/claude-3.5-haiku',
+                model: 'anthropic/claude-haiku-4.5',
                 messages: [
                     {
                         role: 'system',
